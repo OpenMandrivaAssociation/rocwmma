@@ -9,7 +9,7 @@ Summary:	HIP warp-level matrix multiply-accumulate
 License:	MIT
 Group:		Development/C++
 URL:		https://github.com/ROCm/rocm-libraries
-Source0:	%{rocm_libraries_source rocwmma}
+Source0:	https://github.com/ROCm/rocm-libraries/releases/download/therock-10.0/rocwmma.tar.gz#/rocwmma-%{version}.tar.gz
 
 BuildRequires:	rocm-rpm-macros
 BuildRequires:	cmake
