@@ -20,8 +20,6 @@ BuildRequires:	rocm-hip-devel
 BuildRequires:	rocprim-devel
 BuildRequires:	clang >= %{rocm_llvm_maj_ver}
 
-ExclusiveArch:	%{x86_64} %{aarch64}
-
 %description
 rocWMMA provides warp-level matrix fragments and MMA operations
 for HIP kernels (used by some llama.cpp / CK paths).
