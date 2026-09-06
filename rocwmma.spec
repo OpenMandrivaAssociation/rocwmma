@@ -20,6 +20,7 @@ BuildRequires:	rocm-cmake
 BuildRequires:	hipcc
 BuildRequires:	rocm-hip-devel
 BuildRequires:	rocprim-devel
+BuildRequires:	openmp-devel
 BuildRequires:	clang >= %{rocm_llvm_maj_ver}
 
 %description
@@ -31,6 +32,7 @@ Summary:	Development files for %{name}
 Group:		Development/C++
 Requires:	%{name} = %{version}-%{release}
 Requires:	rocm-hip-devel
+Requires:	openmp-devel
 Provides:	rocwmma-devel = %{EVRD}
 
 %description devel
@@ -51,6 +53,9 @@ export CXXFLAGS
 	-DROCWMMA_BUILD_TESTS=OFF \
 	-DROCWMMA_BUILD_SAMPLES=OFF \
 	-DCMAKE_HAVE_LIBC_PTHREAD=1 \
+	-DOpenMP_CXX_FLAGS=-fopenmp \
+	-DOpenMP_CXX_LIB_NAMES=omp \
+	-DOpenMP_omp_LIBRARY=%{_libdir}/libomp.so \
 	-DROCM_PATH=%{_prefix} \
 	-DCMAKE_PREFIX_PATH=%{_prefix} \
 	-G Ninja
