@@ -10,6 +10,8 @@ License:	MIT
 Group:		Development/C++
 URL:		https://github.com/ROCm/rocm-libraries
 Source0:	https://github.com/ROCm/rocm-libraries/releases/download/therock-10.0/rocwmma.tar.gz#/rocwmma-%{version}.tar.gz
+# Host -march in try_compile -xhip fails; detect FP8 from hip/hip_fp8.h
+Patch0:		0001-fp8-header-detect.patch
 
 BuildRequires:	rocm-rpm-macros
 BuildRequires:	cmake

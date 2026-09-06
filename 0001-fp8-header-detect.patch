@@ -1,0 +1,58 @@
+Detect HIP FP8 from the header, not try_compile -xhip.
+
+Distro CXXFLAGS contain host -march flags that hipcc forwards to
+the device compile, so the upstream try_compile always fails.
+
+--- a/cmake/Macros/CheckF8.cmake
++++ b/cmake/Macros/CheckF8.cmake
+@@ -1,30 +1,25 @@
+-# Define a macro to check for the struct
++# Host optflags (-march, -mavx, ...) make try_compile -xhip fail on FHS HIP.
++# TheRock 10.0 HIP 7.15 ships hip/hip_fp8.h; trust the header.
+ macro(check_f8 RESULT_VAR)
+-  # Create a temporary source file
+-  file(WRITE ${CMAKE_BINARY_DIR}/CheckF8.cxx
+-    "
+-    #include <hip/hip_fp8.h>
+-    struct __hip_fp8_e5m2 e5m2;
+-    struct __hip_fp8_e4m3 e4m3;
+-
+-    int main() { return 0; }
+-    "
+-  )
+-
+-  # Try to compile the test program
+-  try_compile(HAS_F8
+-    ${CMAKE_BINARY_DIR}
+-    SOURCES ${CMAKE_BINARY_DIR}/CheckF8.cxx
+-    COMPILE_DEFINITIONS -xhip
+-  )
+-
+-  # Set the result variable
+-  if(HAS_F8)
++  find_path(_ROCWMMA_HIP_FP8_DIR NAMES hip/hip_fp8.h
++            PATHS "${ROCM_PATH}/include" "${CMAKE_INSTALL_PREFIX}/include" /usr/include)
++  if(_ROCWMMA_HIP_FP8_DIR)
+     set(${RESULT_VAR} TRUE)
+   else()
+-    set(${RESULT_VAR} FALSE)
++    file(WRITE ${CMAKE_BINARY_DIR}/CheckF8.cxx
++      "
++      #include <hip/hip_fp8.h>
++      struct __hip_fp8_e5m2 e5m2;
++      struct __hip_fp8_e4m3 e4m3;
++      int main() { return 0; }
++      "
++    )
++    try_compile(HAS_F8
++      ${CMAKE_BINARY_DIR}
++      SOURCES ${CMAKE_BINARY_DIR}/CheckF8.cxx
++      COMPILE_DEFINITIONS -xhip
++    )
++    set(${RESULT_VAR} ${HAS_F8})
++    file(REMOVE ${CMAKE_BINARY_DIR}/CheckF8.cxx)
+   endif()
+-
+-  # Clean up the temporary file (optional but recommended)
+-  file(REMOVE ${CMAKE_BINARY_DIR}/CheckF8.cxx)
+ endmacro()
